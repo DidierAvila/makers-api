@@ -11,7 +11,7 @@ public partial class Role
     public Guid Id { get; set; }
 
     [Required]
-    [MaxLength(100)]
+    [MaxLength(50)]
     public required string Name { get; set; }
 
     [MaxLength(500)]

@@ -4,14 +4,12 @@ using Platform.Application.Core.App.Queries.Handlers;
 using Platform.Application.Core.App.Queries.Loans;
 using Platform.Application.Core.Auth.Commands.Authentication;
 using Platform.Application.Core.Auth.Commands.Handlers;
-using Platform.Application.Core.Auth.Commands.Menus;
 using Platform.Application.Core.Auth.Commands.Permissions;
 using Platform.Application.Core.Auth.Commands.RolePermissions;
 using Platform.Application.Core.Auth.Commands.Roles;
 using Platform.Application.Core.Auth.Commands.Users;
 using Platform.Application.Core.Auth.Commands.UserTypes;
 using Platform.Application.Core.Auth.Queries.Handlers;
-using Platform.Application.Core.Auth.Queries.Menus;
 using Platform.Application.Core.Auth.Queries.Permissions;
 using Platform.Application.Core.Auth.Queries.RolePermissions;
 using Platform.Application.Core.Auth.Queries.Roles;
@@ -51,7 +49,7 @@ namespace Platform.Api.Extensions
             services.AddValidators();
 
             // AutoMapper
-            services.AddAutoMapper(typeof(UserProfile), typeof(UserTypeProfile), typeof(PermissionProfile), typeof(AuthProfile), typeof(RoleProfile), typeof(RolePermissionProfile), typeof(MenuProfile), typeof(MenuPermissionProfile), typeof(LoanProfile));
+            services.AddAutoMapper(typeof(UserProfile), typeof(UserTypeProfile), typeof(PermissionProfile), typeof(AuthProfile), typeof(RoleProfile), typeof(RolePermissionProfile), typeof(LoanProfile));
 
             // Authentication Commands
             services.AddScoped<ILoginCommand, LoginCommand>();
@@ -129,18 +127,6 @@ namespace Platform.Api.Extensions
             services.AddScoped<GetRolesByPermission>();
             services.AddScoped<GetPermissionsByRole>();
 
-            // Menu Commands
-            services.AddScoped<CreateMenu>();
-            services.AddScoped<UpdateMenu>();
-            services.AddScoped<DeleteMenu>();
-            services.AddScoped<IMenuCommandHandler, MenuCommandHandler>();
-
-            // Menu Queries
-            services.AddScoped<GetMenuById>();
-            services.AddScoped<GetAllMenus>();
-            services.AddScoped<GetMenuTree>();
-            services.AddScoped<IMenuQueryHandler, MenuQueryHandler>();
-
             // UserMe Queries
             services.AddScoped<GetUserMe>();
             services.AddScoped<IUserMeQueryHandler, UserMeQueryHandler>();
@@ -155,8 +141,6 @@ namespace Platform.Api.Extensions
             services.AddScoped<IRepositoryBase<UserType>, RepositoryBase<UserType>>();
             services.AddScoped<IRepositoryBase<UserRole>, RepositoryBase<UserRole>>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-            services.AddScoped<IMenuRepository, MenuRepository>();
-            services.AddScoped<IMenuPermissionRepository, MenuPermissionRepository>();
 
             // CQRS Commands - Loan Entity Operations
             services.AddScoped<CreateLoan>();

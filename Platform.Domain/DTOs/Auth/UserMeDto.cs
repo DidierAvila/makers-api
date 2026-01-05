@@ -31,9 +31,6 @@ namespace Platform.Domain.DTOs.Auth
 
         // Configuraciones del Usuario
         public UserConfigurationDto Configuration { get; set; } = new();
-        
-        // Menús/Navegación disponibles según permisos
-        public List<MenuItemDto> AvailableMenus { get; set; } = [];
 
         // Datos adicionales del usuario
         public Dictionary<string, object>? AdditionalData { get; set; }
@@ -61,17 +58,5 @@ namespace Platform.Domain.DTOs.Auth
         public string TimeFormat { get; set; } = "HH:mm";
         public bool NotificationsEnabled { get; set; } = true;
         public Dictionary<string, object>? CustomSettings { get; set; }
-    }
-
-    public class MenuItemDto
-    {
-        public string Id { get; set; } = null!;
-        public string Label { get; set; } = null!;
-        public string? Icon { get; set; }
-        public string? Route { get; set; }
-        public int Order { get; set; }
-        public bool IsGroup { get; set; }
-        public List<MenuItemDto>? Children { get; set; }
-        public List<string>? RequiredPermissions { get; set; }
     }
 }

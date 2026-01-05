@@ -14,7 +14,7 @@ namespace Platform.Domain.Entities.Auth
         [MaxLength(100)]
         public required string Name { get; set; }
 
-        [MaxLength(500)]
+        [Column(TypeName = "text")]
         public string? Description { get; set; }
 
         public required Boolean Status { get; set; }
@@ -25,14 +25,9 @@ namespace Platform.Domain.Entities.Auth
 
         // Navigation properties
         public virtual ICollection<RolePermission> RolePermissions { get; set; } = [];
-        public virtual ICollection<MenuPermission> MenuPermissions { get; set; } = [];
 
         // Helper property para acceso directo a roles
         [NotMapped]
         public virtual ICollection<Role> Roles => [.. RolePermissions.Select(rp => rp.Role)];
-        
-        // Helper property para acceso directo a menus
-        [NotMapped]
-        public virtual ICollection<Menu> Menus => [.. MenuPermissions.Select(mp => mp.Menu)];
     }
 }

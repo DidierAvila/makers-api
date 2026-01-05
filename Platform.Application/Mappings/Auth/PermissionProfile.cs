@@ -32,9 +32,7 @@ namespace Platform.Application.Mappings.Auth
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.RolePermissions, opt => opt.Ignore())
-                .ForMember(dest => dest.Roles, opt => opt.Ignore())
-                .ForMember(dest => dest.MenuPermissions, opt => opt.Ignore())
-                .ForMember(dest => dest.Menus, opt => opt.Ignore());
+                .ForMember(dest => dest.Roles, opt => opt.Ignore());
                 // AutoMapper mapea automáticamente: Name, Description
         }
     }

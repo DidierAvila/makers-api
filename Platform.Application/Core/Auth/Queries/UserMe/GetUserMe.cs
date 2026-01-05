@@ -3,7 +3,6 @@ using Platform.Domain.DTOs.Auth;
 using Platform.Domain.Entities.Auth;
 using Platform.Domain.Repositories;
 using Platform.Domain.Repositories.Auth;
-using System.Text.Json;
 
 namespace Platform.Application.Core.Auth.Queries.UserMe
 {
@@ -14,8 +13,6 @@ namespace Platform.Application.Core.Auth.Queries.UserMe
         private readonly IRepositoryBase<UserType> _userTypeRepository;
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IRolePermissionRepository _rolePermissionRepository;
-        private readonly IMenuRepository _menuRepository;
-        private readonly IMenuPermissionRepository _menuPermissionRepository;
         private readonly IMapper _mapper;
 
         public GetUserMe(
@@ -24,8 +21,6 @@ namespace Platform.Application.Core.Auth.Queries.UserMe
             IRepositoryBase<UserType> userTypeRepository,
             IUserRoleRepository userRoleRepository,
             IRolePermissionRepository rolePermissionRepository,
-            IMenuRepository menuRepository,
-            IMenuPermissionRepository menuPermissionRepository,
             IMapper mapper)
         {
             _userRepository = userRepository;
@@ -33,8 +28,6 @@ namespace Platform.Application.Core.Auth.Queries.UserMe
             _userTypeRepository = userTypeRepository;
             _userRoleRepository = userRoleRepository;
             _rolePermissionRepository = rolePermissionRepository;
-            _menuRepository = menuRepository;
-            _menuPermissionRepository = menuPermissionRepository;
             _mapper = mapper;
         }
 
@@ -132,45 +125,29 @@ namespace Platform.Application.Core.Auth.Queries.UserMe
         }
 
         /// <summary>
-        /// Genera una configuración de portal por defecto basada en los menús y permisos disponibles en la BD
+        /// Genera una configuración de portal por defecto basada en los permisos disponibles en la BD
         /// y la guarda en la base de datos
         /// </summary>
         private async Task<UserTypeDto> GenerateDefaultPortalConfigAsync(Guid userTypeId, List<UserRoleDto> userRoles, CancellationToken cancellationToken)
         {
-            // Obtener todos los permisos del usuario basados en sus roles
-            var userPermissionIds = await GetUserPermissionIdsAsync(userRoles, cancellationToken);
-            
-            // Obtener menús disponibles basados en los permisos del usuario
-            var availableMenus = await GetMenusForPermissionsAsync(userPermissionIds, cancellationToken);
-            
-            // Construir la navegación jerárquica
-            var navigation = BuildNavigationFromMenus(availableMenus);
-            
-            // Crear la configuración adicional con los menús
-            var additionalConfig = new
-            {
-                menus = navigation
-            };
-            
             // Obtener el UserType existente
             var userType = await _userTypeRepository.GetByID(userTypeId, cancellationToken);
-            
+
             if (userType != null)
             {
                 // Actualizar el UserType con la configuración por defecto
                 userType.Theme = "default";
                 userType.DefaultLandingPage = "/dashboard";
                 userType.Language = "es";
-                userType.AdditionalConfig = System.Text.Json.JsonSerializer.Serialize(additionalConfig);
                 userType.UpdatedAt = DateTime.Now;
-                
+
                 // Guardar los cambios
                 await _userTypeRepository.Update(userType, cancellationToken);
-                
+
                 // Crear DTO de configuración
-            return _mapper.Map<UserTypeDto>(userType);
+                return _mapper.Map<UserTypeDto>(userType);
             }
-            
+
             // Si no existe el UserType, devolver una configuración por defecto sin guardar
             // Crear un UserType por defecto
             var defaultUserType = new UserType
@@ -183,14 +160,14 @@ namespace Platform.Application.Core.Auth.Queries.UserMe
                 DefaultLandingPage = "/dashboard",
                 LogoUrl = "/images/logo.png",
                 Language = "es",
-                AdditionalConfig = System.Text.Json.JsonSerializer.Serialize(additionalConfig),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };
-            
+
             return _mapper.Map<UserTypeDto>(defaultUserType);
         }
-        
+
+        /* MÉTODOS COMENTADOS TEMPORALMENTE - Requieren entidades Menu/MenuPermission eliminadas
         /// <summary>
         /// Parsea la configuración adicional desde un string JSON
         /// </summary>
@@ -312,5 +289,6 @@ namespace Platform.Application.Core.Auth.Queries.UserMe
             
             return children;
         }
+        */
     }
 }

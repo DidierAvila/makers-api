@@ -12,8 +12,6 @@ namespace Platform.Infrastructure.DbContexts
         }
 
         public virtual DbSet<Account> AuthAccounts { get; set; }
-        public virtual DbSet<Menu> Menus { get; set; }
-        public virtual DbSet<MenuPermission> MenuPermissions { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
@@ -28,9 +26,6 @@ namespace Platform.Infrastructure.DbContexts
             base.OnModelCreating(modelBuilder);
 
             // Configurar claves primarias compuestas
-            modelBuilder.Entity<MenuPermission>()
-                .HasKey(mp => new { mp.MenuId, mp.PermissionId });
-
             modelBuilder.Entity<RolePermission>()
                 .HasKey(rp => new { rp.RoleId, rp.PermissionId });
 
@@ -38,18 +33,6 @@ namespace Platform.Infrastructure.DbContexts
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
 
             // Configurar relaciones
-            modelBuilder.Entity<MenuPermission>()
-                .HasOne(mp => mp.Menu)
-                .WithMany(m => m.MenuPermissions)
-                .HasForeignKey(mp => mp.MenuId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<MenuPermission>()
-                .HasOne(mp => mp.Permission)
-                .WithMany(p => p.MenuPermissions)
-                .HasForeignKey(mp => mp.PermissionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<RolePermission>()
                 .HasOne(rp => rp.Role)
                 .WithMany(r => r.RolePermissions)
@@ -73,6 +56,23 @@ namespace Platform.Infrastructure.DbContexts
                 .WithMany()
                 .HasForeignKey(ur => ur.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar relación many-to-many entre User y Role usando tabla UserRoles
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Roles)
+                .WithMany(r => r.Users)
+                .UsingEntity<UserRole>(
+                    j => j.HasOne(ur => ur.Role)
+                          .WithMany()
+                          .HasForeignKey(ur => ur.RoleId),
+                    j => j.HasOne(ur => ur.User)
+                          .WithMany()
+                          .HasForeignKey(ur => ur.UserId),
+                    j =>
+                    {
+                        j.ToTable("UserRoles", "Auth");
+                        j.HasKey(ur => new { ur.UserId, ur.RoleId });
+                    });
 
             // Configurar otras relaciones
             modelBuilder.Entity<User>()

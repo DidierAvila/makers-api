@@ -144,13 +144,44 @@ La API estará disponible en:
 
 ## 📚 Uso de la API
 
+### 🔑 Credenciales de Prueba
+
+El sistema viene configurado con las siguientes credenciales para desarrollo y pruebas:
+
+**Usuario Administrador:**
+```
+Email: admin@test.com
+Password: admin123
+```
+
+**Usuario Regular:**
+```
+Email: usuario@test.com
+Password: admin123
+```
+
 ### Autenticación
 
 1. **Login**: `POST /Api/Auth/Login`
 ```json
 {
-  "email": "usuario@ejemplo.com",
-  "password": "contraseña"
+  "email": "admin@test.com",
+  "password": "admin123"
+}
+```
+
+**Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "...",
+      "name": "Administrator",
+      "email": "admin@test.com"
+    }
+  }
 }
 ```
 
